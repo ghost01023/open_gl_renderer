@@ -5,16 +5,20 @@
 
 const char *vertexShaderSource = "#version 330 core\n"
 								 "layout (location = 0) in vec3 aPos;\n"
+								 //  "layout (location = 1) in vec3 colors;\n"
+								 "out vec3 aColor;\n"
 								 "void main() {\n"
 								 "gl_Position = vec4(aPos, 1.0f);\n"
+								 //  "aColor = colors;\n"
 								 "}";
 
 const char *fragmentShaderSource = "#version 330 core\n"
 								   "out vec4 FragColor;\n"
-								   "uniform float time;\n"
+								   "uniform float u_time;\n"
 								   "void main() {\n"
-								   "float intensity = sin(time);\n"
-								   "FragColor = vec4(0.9f, 0.8f, 0.9f, 1.0f);\n"
+								   "float intensity_blue = 0.5 * sin(u_time);\n"
+								   "float intensity_green = sin(u_time);\n"
+								   "FragColor = vec4(intensity_blue /intensity_green, intensity_green, intensity_blue, 1.0f);\n"
 								   "}";
 
 void glfwFrameBufferSizeCallback(GLFWwindow *window, int width, int height);
@@ -48,7 +52,7 @@ int main()
 		std::cout << "FAILED TO INITIALIZE GLAD" << std::endl;
 		return -1;
 	}
-	glViewport(0, 0, 800, 700);
+	glViewport(0, 0, video_mode->width, video_mode->height);
 	glfwSetFramebufferSizeCallback(window, glfwFrameBufferSizeCallback);
 
 	////////////////////////////////////////////////
@@ -57,14 +61,14 @@ int main()
 
 	// DEFINE AND RENDER FIRST TRIANGLE
 	float triangle_1_vertices[] = {
-		-0.7f, 0.9f, 1.0f,
-		0.9f, 0.9f, 1.0f,
-		0.0f, -0.9f, 1.0f};
+		0.0f, 0.5f, 1.0f,
+		-0.5f, -0.5f, 1.0f,
+		0.5f, -0.5f, 1.0f};
 
-	float triangle_2_vertices[] = {
-		-0.9f, 0.5f, 0.0f,
-		-0.6f, 0.5f, 0.0f, // FIRST TRIANGLE
-		-0.75f, 0.0f, 0.0f};
+	// float triangle_2_vertices[] = {
+	// 	-0.9f, 0.5f, 0.0f,
+	// 	-0.6f, 0.5f, 0.0f, // FIRST TRIANGLE
+	// 	-0.75f, 0.0f, 0.0f};
 
 	// ERROR AND INFO LOGS
 	int success;
@@ -133,15 +137,18 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
 
-	unsigned int VBO2;
-	glGenBuffers(1, &VBO2);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), triangle_2_vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-	glEnableVertexAttribArray(1);
+	// unsigned int VBO2;
+	// glGenBuffers(1, &VBO2);
+	// glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	// glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), triangle_2_vertices, GL_STATIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+	// glEnableVertexAttribArray(1);
 
 	while (!glfwWindowShouldClose(window))
 	{
+		float time = glfwGetTime(); // Example using GLFW to get the time in seconds
+		GLuint timeUniformLocation = glGetUniformLocation(shaderProgram, "u_time");
+		glUniform1f(timeUniformLocation, time);
 		glClearColor(0.1, 0.1, 0.3, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
@@ -158,7 +165,7 @@ int main()
 
 void glfwFrameBufferSizeCallback(GLFWwindow *window, int width, int height)
 {
-	glViewport(0, 0, 800, 700);
+	glViewport(0, 0, width, height);
 }
 
 void processInput(GLFWwindow *window)
