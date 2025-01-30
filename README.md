@@ -19,7 +19,7 @@ pacman -Syu
 ```
 
 \
-Now, you must install the mingw toolchain which will allow you to install glad and GLFW libraries.
+Now, you require the mingw toolchain to - in turn - install glad and GLFW libraries.
 \
 For 64-bit systems, run:
 
