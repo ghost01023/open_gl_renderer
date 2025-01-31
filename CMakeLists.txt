@@ -21,7 +21,7 @@ include_directories("C:/msys64/mingw64/include")
 add_library(glad STATIC "C:/msys64/mingw64/lib/glad/glad.c")
 
 # Add the executable target
-add_executable(OpenGLApp main.cpp)
+add_executable(OpenGLApp main.cpp shader.cpp window.cpp)
 
 # Link the libraries
 target_link_libraries(OpenGLApp glad glfw3 opengl32 gdi32)
