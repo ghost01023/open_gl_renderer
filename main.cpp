@@ -1,6 +1,5 @@
 #include "window.h"
 #include "shader.h"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -51,7 +50,11 @@ int main()
 	}
 
 	char fragmentShaderYellowSource[1000];
-	loadShader("fragment_2.frag", fragmentShaderYellowSource);
+	success = loadShader("fragment_yellow.frag", fragmentShaderYellowSource);
+	if (!success)
+	{
+		return EXIT_FAILURE;
+	}
 	unsigned int fragmentShaderYellow = createFragmentShader(fragmentShaderYellowSource, infoLog);
 	unsigned int shaderProgramYellow = createShaderProgram(vertexShader, fragmentShaderYellow, infoLog);
 	checkOpenGLError("After createShaderProgram for yellowFragmentShader");
@@ -64,43 +67,43 @@ int main()
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	unsigned int VAO[2];
+	glGenVertexArrays(2, VAO);
 
 	// TRIANGLES TO BE RENDERED
 	float triangle_1_vertices[] = {
-		-0.3f, 0.5f, 1.0f,
-		0.3f, 0.5f, 1.0f,
-		-0.3f, -0.5f, 1.0f};
+		-0.3f, 0.5f, 1.0f, -0.3f, 0.5f, 1.0f,
+		0.3f, 0.5f, 1.0f, -0.3f, 0.5f, 1.0f,
+		-0.3f, -0.5f, 1.0f, -0.3f, 0.5f, 1.0f};
 
 	float triangle_2_vertices[] = {
-		0.3f, 0.5f, 1.0f,
-		-0.3f, -0.5f, 1.0f,
-		0.3f, -0.5f, 1.0f};
+		0.3f, 0.5f, 1.0f, 0.3f, 0.5f, 1.0f,
+		-0.3f, -0.5f, 1.0f, 0.3f, 0.5f, 1.0f,
+		0.3f, -0.5f, 1.0f, 0.3f, 0.5f, 1.0f};
 
 	// ARRAY BUFFERS IN GPU
-	unsigned int VBO1 = createArrayBufferObject(triangle_1_vertices, 9, GL_STATIC_DRAW);
-	unsigned int VBO2 = createArrayBufferObject(triangle_2_vertices, 9, GL_STATIC_DRAW);
+	glBindVertexArray(VAO[0]);
+	unsigned int VBO1 = createArrayBufferObject(triangle_1_vertices, 18, GL_STATIC_DRAW);
+	glBindVertexArray(VAO[1]);
+	unsigned int VBO2 = createArrayBufferObject(triangle_2_vertices, 18, GL_STATIC_DRAW);
 	std::cout << VBO1 << " -> " << sizeof(triangle_1_vertices) << std::endl;
 	std::cout << VBO2 << " -> " << sizeof(triangle_2_vertices) << std::endl;
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glEnable(GL_POINT_SMOOTH);
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.1, 0.1, 0.3, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBindVertexArray(VAO);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// glPointSize(7.0);
+		// glLineWidth(4.5)
+		glBindVertexArray(VAO[0]);
 		glUseProgram(shaderProgram);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO1);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-		glEnableVertexAttribArray(0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glUseProgram(shaderProgramYellow);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-		glEnableVertexAttribArray(0);
+		glBindVertexArray(VAO[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glfwSwapBuffers(window);
 		processInput(window);
@@ -128,7 +131,10 @@ unsigned int createArrayBufferObject(GLfloat vertices[], int length, GLenum draw
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, length * sizeof(float), vertices, drawType);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0); // ATTRIB POINTER FOR LOCATION
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	return VBO;
 };
 
