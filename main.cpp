@@ -53,10 +53,8 @@ int main()
 	char fragmentShaderYellowSource[1000];
 	loadShader("fragment_2.frag", fragmentShaderYellowSource);
 	unsigned int fragmentShaderYellow = createFragmentShader(fragmentShaderYellowSource, infoLog);
-	// std::cout << fragmentShaderYellowSource << std::endl;
 	unsigned int shaderProgramYellow = createShaderProgram(vertexShader, fragmentShaderYellow, infoLog);
 	checkOpenGLError("After createShaderProgram for yellowFragmentShader");
-	// std::cout << shaderProgram << " " << shaderProgramYellow << std::endl;
 	if (!shaderProgramYellow)
 	{
 		return EXIT_FAILURE;
@@ -76,34 +74,21 @@ int main()
 		0.3f, 0.5f, 1.0f,
 		-0.3f, -0.5f, 1.0f};
 
-	// ELEMENT ARRAY BUFFER DATA
-	//  unsigned int elements[] = {
-	//  	0, 1, 2, 1, 2, 3};
-
 	float triangle_2_vertices[] = {
 		0.3f, 0.5f, 1.0f,
 		-0.3f, -0.5f, 1.0f,
 		0.3f, -0.5f, 1.0f};
+
 	// ARRAY BUFFERS IN GPU
 	unsigned int VBO1 = createArrayBufferObject(triangle_1_vertices, 9, GL_STATIC_DRAW);
 	unsigned int VBO2 = createArrayBufferObject(triangle_2_vertices, 9, GL_STATIC_DRAW);
 	std::cout << VBO1 << " -> " << sizeof(triangle_1_vertices) << std::endl;
 	std::cout << VBO2 << " -> " << sizeof(triangle_2_vertices) << std::endl;
-	// createArrayBufferObject(triangle_2_vertices, 9, GL_STATIC_DRAW);
 
-	// unsigned int EBO;
-	// glGenBuffers(1, &EBO);
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 	while (!glfwWindowShouldClose(window))
 	{
-		// float time = glfwGetTime(); // RENDER DYNAMICALLY COLORED TRIANGLE
-		// checkOpenGLError("Something during the render loop");
-		// GLuint timeUniformLocation = glGetUniformLocation(shaderProgram, "u_time");
-		// glUniform1f(timeUniformLocation, time);
 		glClearColor(0.1, 0.1, 0.3, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBindVertexArray(VAO);
@@ -117,9 +102,6 @@ int main()
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 		glEnableVertexAttribArray(0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		processInput(window);
 		glfwPollEvents();
