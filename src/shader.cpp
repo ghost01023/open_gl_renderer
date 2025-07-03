@@ -1,6 +1,7 @@
 #include "shader.h"
 
-#include <glad/glad.h>
+
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string.h>
@@ -74,7 +75,7 @@ int loadShader(const char *fileName, char destination[])
     char fileRelativePath[25];
     destination[0] = '\0';
     fileRelativePath[0] = '\0';
-    strcat(fileRelativePath, "../shaders/");
+    strcat(fileRelativePath, "./shaders/");
     strcat(fileRelativePath, fileName);
     char shaderSourceBuffer[10];
     FILE *fptr = fopen(fileRelativePath, "r");

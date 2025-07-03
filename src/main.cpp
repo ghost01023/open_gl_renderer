@@ -1,6 +1,6 @@
 #include "window.h"
+#include <glad/gl.h>
 #include "shader.h"
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string.h>
@@ -90,7 +90,7 @@ int main()
 	std::cout << VBO2 << " -> " << sizeof(triangle_2_vertices) << std::endl;
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_PROGRAM_POINT_SIZE);
-	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.1, 0.1, 0.3, 1.0);

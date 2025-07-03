@@ -8,6 +8,8 @@ This project is currently being written for Windows.
 
 # Quick Setup
 
+## For Windows
+
 First, download and run the [msys2 Installer](https://www.msys2.org/docs/installer/).
 
 After installation at the default location, run MSYS2 MINGW(32 || 64) based on your system architecture.
@@ -122,17 +124,36 @@ If you really love pain, you can also build and run via:
 g++ main.cpp C:/msys64/mingw64/lib/glad/glad.c -o OpenGLApp.exe -I"C:/msys64/mingw64/include" -L"C:/msys64/mingw64/lib" -lglfw3 -lopengl32 -lgdi32
 ```
 
+## For Linux
+
+Like in Windows, you need the GLFW and Glad libraries.
+
+For GLFW, I recommend building it from the source to make it fit your system perfectly. This process is easy enough.
+
+Clone the Repo and `cd` into it
+
+```
+git clone https://github.com/glfw/glfw.git
+cd glfw
+
+```
+
+Now, just use CMake to build and install the library.
+
+```
+cmake -S . -B build
+cmake --build build
+sudo cmake --install build
+```
+
+Now, for GLAD,
+
 ## FAQ
 
 ### I opened this project in VSCode and there are red squiggles beneath the include header lines
 
     1. Stop using VSCode.
     2. Also, make sure you have installed the C/C++ Extension Pack and edited the C/C++ Edit Configuration file with include paths and compiler location in case it doesn't automatically detect it.
-
-### What if I have LINUX?
-
-Sorry. Nerds not allowed.
-i use arch, btw
 
 ### I don't have a GPU. Can I still run this app😊😊?
 
