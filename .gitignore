@@ -1,8 +1,9 @@
+/.vscode
 /build
 OpenGLApp.exe
 main.exe
 compile_commands.json
-./OpenGLApp
+OpenGLApp
 /external/glad/*
 !/external/glad/include
 !/external/glad/src
